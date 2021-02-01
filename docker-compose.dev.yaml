@@ -1,0 +1,12 @@
+version: '3'
+services:
+  db:
+    image:  postgres:11
+    ports:
+      - 32700:5432
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER:  root
+      POSTGRES_PASSWORD:  root
+      POSTGRES_DB: employment_exchange

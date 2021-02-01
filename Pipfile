@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "*"
+uvicorn = "*"
+sqlalchemy = "*"
+databases = {extras = ["postgresql"], version = "*"}
+psycopg2-binary = "*"
+pydantic = {extras = ["email"], version = "*"}
+passlib = "*"
+bcrypt = "*"
+jose = "*"
+python-jose = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"
