@@ -1,0 +1,77 @@
+namespace: employment-exchange
+
+postgres-db:
+  defines: runnable
+  inherits: postgresql/db
+  metadata:
+    name: postgres-db
+    description: PostgreSQL database service required by the FastAPI application.
+    icon: https://www.postgresql.org/media/img/about/press/elephant.png
+  variables:
+    db_name:
+      type: string
+      value: monk
+      description: ''
+    db_pass:
+      type: string
+      value: adminpassword
+      description: ''
+    db_user:
+      type: string
+      value: monk
+      description: ''
+
+fastapi-crud-app:
+  defines: runnable
+  metadata:
+    name: fastapi-crud-app
+    description: >-
+      FastAPI application serving API endpoints for users, authentication, and
+      jobs.
+    icon: https://emojiapi.dev/api/v1/robot.svg
+  containers:
+    fastapi-crud-app:
+      image: env-4335.registry.local/fastapi-crud-app:master-3a66612
+      build: .
+      dockerfile: Dockerfile.fastapi-crud-app
+  services:
+    fastapi-default-port:
+      description: Default port for FastAPI application
+      container: fastapi-crud-app
+      port: 8000
+      host-port: 8000
+      publish: true
+      protocol: tcp
+  connections:
+    database-connection:
+      target: employment-exchange/postgres-db
+      service: postgres
+      optional: true
+      description: Connection to the PostgreSQL database service
+  variables:
+    ee-database-url:
+      env: EE_DATABASE_URL
+      type: string
+      value: postgresql://monk:adminpassword@postgres-db/postgres
+      description: Complete database URL for connecting to the PostgreSQL database
+    access-token-expire-minutes:
+      env: ACCESS_TOKEN_EXPIRE_MINUTES
+      type: int
+      value: '60'
+      description: The expiration time in minutes for the access token
+    algorithm:
+      env: ALGORITHM
+      type: string
+      value: HS256
+      description: Algorithm used for encoding the JWT
+    ee-secret-key:
+      env: EE_SECRET_KEY
+      type: string
+      value: 2b2d197649061838c0c381612cb117d5f562ff181f2ed68c7847471af22f83ce
+      description: Secret key used for encoding the JWT
+
+stack:
+  defines: group
+  members:
+    - employment-exchange/postgres-db
+    - employment-exchange/fastapi-crud-app
